@@ -3,7 +3,7 @@ import SignatureForm from './components/SignatureForm.jsx';
 import SignaturePreview from './components/SignaturePreview.jsx';
 import { buildSignatureHTML } from './signatureTemplate.js';
 
-const STORAGE_KEY = 'signature-gmail:data:v1';
+const STORAGE_KEY = 'signature-gmail:data:v2';
 
 const DEFAULT_DATA = {
   firstName: 'Jean',
@@ -14,11 +14,14 @@ const DEFAULT_DATA = {
   phone: '+33 1 23 45 67 89',
   mobile: '+33 6 12 34 56 78',
   website: 'entreprise.com',
+  website2: '',
   linkedin: 'linkedin.com/in/jeandupont',
   twitter: '',
   instagram: '',
+  youtube: '',
   color: '#2563eb',
-  logoUrl: ''
+  logoUrl: '',
+  theme: 'classic'
 };
 
 function loadInitialData() {
@@ -43,7 +46,11 @@ export default function App() {
     }
   }, [data]);
 
-  const html = useMemo(() => buildSignatureHTML(data), [data]);
+  const html = useMemo(() => buildSignatureHTML(data, data.theme), [data]);
+
+  const handleThemeChange = (newTheme) => {
+    setData({ ...data, theme: newTheme });
+  };
 
   const handleReset = () => {
     if (confirm('Réinitialiser tous les champs ?')) {
@@ -68,7 +75,7 @@ export default function App() {
                 Générateur de Signature Gmail
               </h1>
               <p className="text-xs text-slate-500">
-                Créez une signature professionnelle en quelques secondes.
+                Thèmes multiples + 5 designs professionnels.
               </p>
             </div>
           </div>
@@ -96,14 +103,18 @@ export default function App() {
             className="lg:col-span-2 order-1 lg:order-2"
           >
             <div className="lg:sticky lg:top-24">
-              <SignaturePreview html={html} />
+              <SignaturePreview
+                html={html}
+                theme={data.theme}
+                onThemeChange={handleThemeChange}
+              />
             </div>
           </section>
         </div>
       </main>
 
       <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-xs text-slate-400">
-        Vos données sont stockées localement dans votre navigateur.
+        Vos données sont stockées localement dans votre navigateur. Aucun serveur impliqué.
       </footer>
     </div>
   );

@@ -65,7 +65,7 @@ export default function SignatureForm({ data, onChange, onReset }) {
         </Field>
       </Section>
 
-      <Section title="Coordonnées" subtitle="Comment vous joindre">
+      <Section title="Coordonnées" subtitle="Comment vous joindre + image">
         <Field label="Email">
           <input
             className="field-input"
@@ -75,13 +75,22 @@ export default function SignatureForm({ data, onChange, onReset }) {
             placeholder="jean.dupont@entreprise.com"
           />
         </Field>
-        <Field label="Site Web">
+        <Field label="Site Web (1)">
           <input
             className="field-input"
             type="text"
             value={data.website}
             onChange={update('website')}
             placeholder="entreprise.com"
+          />
+        </Field>
+        <Field label="Site Web (2)">
+          <input
+            className="field-input"
+            type="text"
+            value={data.website2}
+            onChange={update('website2')}
+            placeholder="blog.entreprise.com (optionnel)"
           />
         </Field>
         <Field label="Téléphone (Fixe)">
@@ -100,6 +109,15 @@ export default function SignatureForm({ data, onChange, onReset }) {
             value={data.mobile}
             onChange={update('mobile')}
             placeholder="+33 6 12 34 56 78"
+          />
+        </Field>
+        <Field label="Image (à gauche)">
+          <input
+            className="field-input"
+            type="url"
+            value={data.logoUrl}
+            onChange={update('logoUrl')}
+            placeholder="https://example.com/logo.png"
           />
         </Field>
       </Section>
@@ -132,6 +150,15 @@ export default function SignatureForm({ data, onChange, onReset }) {
             placeholder="instagram.com/jeandupont"
           />
         </Field>
+        <Field label="YouTube">
+          <input
+            className="field-input"
+            type="text"
+            value={data.youtube}
+            onChange={update('youtube')}
+            placeholder="youtube.com/@jeandupont"
+          />
+        </Field>
       </Section>
 
       <Section title="Design" subtitle="Personnalisez l'identité visuelle">
@@ -151,15 +178,6 @@ export default function SignatureForm({ data, onChange, onReset }) {
               placeholder="#0f172a"
             />
           </div>
-        </Field>
-        <Field label="URL du logo / photo">
-          <input
-            className="field-input"
-            type="url"
-            value={data.logoUrl}
-            onChange={update('logoUrl')}
-            placeholder="https://..."
-          />
         </Field>
       </Section>
 

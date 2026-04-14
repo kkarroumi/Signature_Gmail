@@ -1,6 +1,29 @@
 import React, { useRef, useState } from 'react';
+import { THEMES } from '../signatureTemplate.js';
 
-export default function SignaturePreview({ html }) {
+function ThemeSelector({ currentTheme, onThemeChange }) {
+  return (
+    <div className="flex flex-wrap gap-2 mb-4">
+      {THEMES.map((theme) => (
+        <button
+          key={theme.id}
+          type="button"
+          onClick={() => onThemeChange(theme.id)}
+          className={`px-3 py-1.5 text-xs font-medium rounded-lg transition ${
+            currentTheme === theme.id
+              ? 'bg-slate-900 text-white shadow-soft'
+              : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+          }`}
+          title={theme.description}
+        >
+          {theme.name}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export default function SignaturePreview({ html, theme, onThemeChange }) {
   const visualRef = useRef(null);
   const [toast, setToast] = useState('');
   const [showCode, setShowCode] = useState(false);
@@ -52,20 +75,16 @@ export default function SignaturePreview({ html }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-sm font-semibold text-slate-900">Prévisualisation</h3>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Rendu exact tel qu'il apparaîtra dans un email.
-          </p>
-        </div>
-        <button
-          type="button"
-          className="btn-ghost text-xs"
-          onClick={() => setShowCode((v) => !v)}
-        >
-          {showCode ? 'Masquer HTML' : 'Afficher HTML'}
-        </button>
+      <div>
+        <h3 className="text-sm font-semibold text-slate-900 mb-3">Thème</h3>
+        <ThemeSelector currentTheme={theme} onThemeChange={onThemeChange} />
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold text-slate-900 mb-2">Prévisualisation</h3>
+        <p className="text-xs text-slate-500 mb-3">
+          Rendu exact tel qu'il apparaîtra dans un email.
+        </p>
       </div>
 
       <div className="rounded-2xl bg-white border border-slate-200/70 shadow-card overflow-hidden">
@@ -75,10 +94,10 @@ export default function SignaturePreview({ html }) {
           <span className="h-2.5 w-2.5 rounded-full bg-green-400/80" />
           <span className="ml-3 text-xs text-slate-500">aperçu@signature.email</span>
         </div>
-        <div className="p-6 bg-white">
+        <div className="p-6 bg-white overflow-x-auto">
           <div
             ref={visualRef}
-            className="preview-area"
+            className="preview-area inline-block"
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </div>
@@ -90,6 +109,16 @@ export default function SignaturePreview({ html }) {
         </button>
         <button type="button" className="btn-secondary" onClick={copyHTML}>
           Copier le code HTML
+        </button>
+      </div>
+
+      <div>
+        <button
+          type="button"
+          className="btn-ghost text-xs"
+          onClick={() => setShowCode((v) => !v)}
+        >
+          {showCode ? '↓ Masquer HTML' : '↑ Afficher HTML'}
         </button>
       </div>
 

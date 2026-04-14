@@ -1,45 +1,29 @@
-// Génère le HTML de la signature (tables-based, compatible Gmail)
-// Les icônes sociales sont inline en SVG data-uri pour éviter toute dépendance externe.
-
-const icon = (svg) =>
-  `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-
-const LINKEDIN_ICON = icon(
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ffffff"><rect width="24" height="24" rx="4" fill="%%COLOR%%"/><path d="M7.1 9.3h2.6v8H7.1v-8zm1.3-3.8a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM11.3 9.3h2.5v1.1h.03c.35-.66 1.2-1.35 2.47-1.35 2.64 0 3.13 1.74 3.13 4v4.25h-2.6v-3.77c0-.9-.02-2.06-1.25-2.06-1.25 0-1.44.98-1.44 1.99v3.84h-2.6v-8z"/></svg>`
-);
-
-const TWITTER_ICON = icon(
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="%%COLOR%%"/><path fill="#ffffff" d="M17.5 6.5h2.3l-5 5.73L21 18.5h-4.6l-3.6-4.7-4.13 4.7H6.37l5.36-6.12L6 6.5h4.72l3.25 4.3 3.53-4.3zm-.8 10.6h1.27L9.4 7.8H8.03l8.67 9.3z"/></svg>`
-);
-
-const INSTAGRAM_ICON = icon(
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="%%COLOR%%"/><path fill="none" stroke="#ffffff" stroke-width="1.6" d="M8 5h8a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3z"/><circle cx="12" cy="12" r="3" fill="none" stroke="#ffffff" stroke-width="1.6"/><circle cx="16.6" cy="7.4" r="0.9" fill="#ffffff"/></svg>`
-);
-
-const PHONE_ICON = icon(
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%%COLOR%%" d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.3 1.1.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.3 1.1l-2.2 2.1z"/></svg>`
-);
-
-const MOBILE_ICON = icon(
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%%COLOR%%" d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v14h10V4H7zm5 16a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>`
-);
-
-const MAIL_ICON = icon(
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%%COLOR%%" d="M3 6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5v-11zm2.1.3 6.9 5.2 6.9-5.2a.5.5 0 0 0-.4-.8H5.5a.5.5 0 0 0-.4.8zM19 8.6l-6.4 4.85a1 1 0 0 1-1.2 0L5 8.6v8.9c0 .28.22.5.5.5h13a.5.5 0 0 0 .5-.5V8.6z"/></svg>`
-);
-
-const WEB_ICON = icon(
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%%COLOR%%" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm7.9 9h-3.3a15.6 15.6 0 0 0-1.2-5.1A8 8 0 0 1 19.9 11zM12 4c.9 1.3 1.9 3.6 2.2 7h-4.4C10.1 7.6 11.1 5.3 12 4zM4.1 13h3.3a15.6 15.6 0 0 0 1.2 5.1A8 8 0 0 1 4.1 13zm0-2a8 8 0 0 1 4.5-5.1A15.6 15.6 0 0 0 7.4 11zM12 20c-.9-1.3-1.9-3.6-2.2-7h4.4c-.3 3.4-1.3 5.7-2.2 7zm3.4-1.9a15.6 15.6 0 0 0 1.2-5.1h3.3a8 8 0 0 1-4.5 5.1z"/></svg>`
-);
-
-const withColor = (dataUri, color) =>
-  dataUri.replace(/%%COLOR%%/g, encodeURIComponent(color));
-
-const ensureProtocol = (url) => {
-  if (!url) return '';
-  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+// Brand colors + labels for social badges (colored TD cells — Gmail-proof).
+const SOCIAL_BRANDS = {
+  linkedin:  { bg: '#0A66C2', label: 'in' },
+  twitter:   { bg: '#000000', label: '𝕏' },
+  instagram: { bg: '#E4405F', label: 'IG' },
+  youtube:   { bg: '#FF0000', label: '▶' }
 };
 
+// Emoji icons — render natively in Gmail/Outlook/Apple Mail.
+const CONTACT_ICONS = {
+  mail:   '📧',
+  phone:  '📞',
+  mobile: '📱',
+  web:    '🌐'
+};
+
+// Theme registry.
+export const THEMES = [
+  { id: 'classic', name: 'Classic', description: 'Barre latérale colorée' },
+  { id: 'modern',  name: 'Modern',  description: 'Nom en gras avec divider' },
+  { id: 'minimal', name: 'Minimal', description: 'Texte épuré sans icônes' },
+  { id: 'banner',  name: 'Banner',  description: 'En-tête coloré' },
+  { id: 'compact', name: 'Compact', description: 'Format horizontal' }
+];
+
+// ==================== Helpers ====================
 const escape = (s = '') =>
   String(s)
     .replace(/&/g, '&amp;')
@@ -47,100 +31,298 @@ const escape = (s = '') =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 
-export function buildSignatureHTML(data) {
+const ensureProtocol = (url) => {
+  if (!url) return '';
+  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+};
+
+const telHref = (tel) => `tel:${tel.replace(/[^\d+]/g, '')}`;
+
+// Contact icon span (emoji, inherits no color — emojis have native colors).
+function contactIcon(type, size = 14) {
+  const ch = CONTACT_ICONS[type] || '•';
+  return `<span style="font-size: ${size}px; line-height: 1; display: inline-block;">${ch}</span>`;
+}
+
+// Social badge — colored cell with letter. Works in every email client.
+function socialBadge(brand, href, size = 24) {
+  if (!href) return '';
+  const info = SOCIAL_BRANDS[brand];
+  if (!info) return '';
+  const fs = info.label.length === 1 ? Math.round(size * 0.55) : Math.round(size * 0.42);
+  return `<td style="padding-right: 6px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td style="width: ${size}px; height: ${size}px; background-color: ${info.bg}; text-align: center; vertical-align: middle; border-radius: 4px;">
+        <a href="${escape(ensureProtocol(href))}" style="display: inline-block; width: ${size}px; height: ${size}px; line-height: ${size}px; color: #ffffff; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: ${fs}px; font-weight: bold;">${info.label}</a>
+      </td>
+    </tr></table>
+  </td>`;
+}
+
+function allSocials(data, size = 24) {
+  return [
+    socialBadge('linkedin',  data.linkedin,  size),
+    socialBadge('twitter',   data.twitter,   size),
+    socialBadge('instagram', data.instagram, size),
+    socialBadge('youtube',   data.youtube,   size)
+  ].join('');
+}
+
+// Safe logo <img> — uses external URL (Gmail accepts hosted images).
+function logoImg(data, size = 80, radius = 6) {
+  if (!data.logoUrl) return '';
+  const fullName = [data.firstName, data.lastName].filter(Boolean).join(' ');
+  return `<img src="${escape(ensureProtocol(data.logoUrl))}" alt="${escape(fullName)}" width="${size}" height="${size}" style="display:block; border:0; border-radius:${radius}px; max-width:${size}px; height:auto;" />`;
+}
+
+// ==================== Dispatcher ====================
+export function buildSignatureHTML(data, themeId = 'classic') {
+  const builders = {
+    classic: buildClassic,
+    modern:  buildModern,
+    minimal: buildMinimal,
+    banner:  buildBanner,
+    compact: buildCompact
+  };
+  return (builders[themeId] || builders.classic)(data);
+}
+
+// ==================== THEME 1: CLASSIC ====================
+function buildClassic(data) {
   const {
-    firstName = '',
-    lastName = '',
-    jobTitle = '',
-    department = '',
-    email = '',
-    phone = '',
-    mobile = '',
-    website = '',
-    linkedin = '',
-    twitter = '',
-    instagram = '',
-    color = '#0f172a',
-    logoUrl = ''
+    firstName = '', lastName = '', jobTitle = '', department = '',
+    email = '', phone = '', mobile = '', website = '', website2 = '',
+    color = '#0f172a'
   } = data;
 
   const fullName = [firstName, lastName].filter(Boolean).join(' ');
-  const baseFont =
-    "font-family: Arial, Helvetica, sans-serif; color: #1f2937; font-size: 13px; line-height: 1.5;";
-
-  const row = (iconUri, label, href) => {
-    if (!label) return '';
-    return `
-      <tr>
-        <td style="padding: 2px 8px 2px 0; vertical-align: middle; width: 18px;">
-          <img src="${withColor(iconUri, color)}" width="14" height="14" alt="" style="display:block;border:0;" />
-        </td>
-        <td style="padding: 2px 0; ${baseFont}">
-          ${
-            href
-              ? `<a href="${escape(href)}" style="color:#1f2937; text-decoration: none;">${escape(label)}</a>`
-              : escape(label)
-          }
-        </td>
-      </tr>`;
-  };
-
-  const socialCell = (iconUri, href) => {
-    if (!href) return '';
-    return `<td style="padding-right: 6px;">
-      <a href="${escape(ensureProtocol(href))}" style="text-decoration:none;">
-        <img src="${withColor(iconUri, color)}" width="24" height="24" alt="" style="display:block;border:0;border-radius:4px;" />
-      </a>
-    </td>`;
-  };
-
-  const socials = [
-    socialCell(LINKEDIN_ICON, linkedin),
-    socialCell(TWITTER_ICON, twitter),
-    socialCell(INSTAGRAM_ICON, instagram)
-  ].join('');
-
-  const socialsRow = socials
-    ? `<tr><td style="padding-top: 10px;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>${socials}</tr></table>
-      </td></tr>`
-    : '';
-
-  const logoCell = logoUrl
-    ? `<td style="padding-right: 20px; vertical-align: top;">
-        <img src="${escape(logoUrl)}" alt="${escape(fullName)}" width="84" height="84"
-             style="display:block; border:0; border-radius: 8px; object-fit: cover;" />
-      </td>`
-    : '';
-
   const title = [jobTitle, department].filter(Boolean).join(' • ');
+  const baseFont = "font-family: Arial, Helvetica, sans-serif; color: #1f2937; font-size: 13px; line-height: 1.5;";
+
+  const row = (type, label, href) => {
+    if (!label) return '';
+    return `<tr>
+      <td style="padding: 2px 8px 2px 0; vertical-align: middle; width: 18px;">${contactIcon(type, 14)}</td>
+      <td style="padding: 2px 0; ${baseFont}">
+        ${href ? `<a href="${escape(href)}" style="color:#1f2937; text-decoration: none;">${escape(label)}</a>` : escape(label)}
+      </td>
+    </tr>`;
+  };
+
+  const socials = allSocials(data, 24);
+  const socialsRow = socials
+    ? `<tr><td style="padding-top: 10px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>${socials}</tr></table></td></tr>`
+    : '';
+
+  const logoCell = data.logoUrl
+    ? `<td style="padding-right: 20px; vertical-align: top;">${logoImg(data, 80, 6)}</td>`
+    : '';
 
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="${baseFont}">
   <tr>
     ${logoCell}
     <td style="vertical-align: top; border-left: 3px solid ${escape(color)}; padding-left: 16px;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td style="font-family: Arial, Helvetica, sans-serif; font-size: 17px; font-weight: bold; color: ${escape(color)}; padding-bottom: 2px;">
-            ${escape(fullName) || '&nbsp;'}
-          </td>
-        </tr>
-        ${
-          title
-            ? `<tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #475569; padding-bottom: 8px;">${escape(title)}</td></tr>`
-            : ''
-        }
+        <tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 17px; font-weight: bold; color: ${escape(color)}; padding-bottom: 2px;">${escape(fullName) || '&nbsp;'}</td></tr>
+        ${title ? `<tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #475569; padding-bottom: 8px;">${escape(title)}</td></tr>` : ''}
         <tr><td style="padding-top: 4px;">
           <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-            ${row(MAIL_ICON, email, email ? `mailto:${email}` : '')}
-            ${row(PHONE_ICON, phone, phone ? `tel:${phone.replace(/\s+/g, '')}` : '')}
-            ${row(MOBILE_ICON, mobile, mobile ? `tel:${mobile.replace(/\s+/g, '')}` : '')}
-            ${row(WEB_ICON, website, website ? ensureProtocol(website) : '')}
+            ${row('mail',   email,    email ? `mailto:${email}` : '')}
+            ${row('phone',  phone,    phone ? telHref(phone) : '')}
+            ${row('mobile', mobile,   mobile ? telHref(mobile) : '')}
+            ${row('web',    website,  website ? ensureProtocol(website) : '')}
+            ${row('web',    website2, website2 ? ensureProtocol(website2) : '')}
           </table>
         </td></tr>
         ${socialsRow}
       </table>
     </td>
+  </tr>
+</table>`;
+}
+
+// ==================== THEME 2: MODERN ====================
+function buildModern(data) {
+  const {
+    firstName = '', lastName = '', jobTitle = '', department = '',
+    email = '', phone = '', mobile = '', website = '', website2 = '',
+    color = '#2563eb'
+  } = data;
+
+  const fullName = [firstName, lastName].filter(Boolean).join(' ');
+  const title = [jobTitle, department].filter(Boolean).join(' · ');
+  const baseFont = "font-family: Arial, Helvetica, sans-serif; color: #374151; font-size: 12px;";
+
+  const logoCell = data.logoUrl
+    ? `<td style="padding-right: 16px; vertical-align: top;">${logoImg(data, 72, 6)}</td>`
+    : '';
+
+  const cell = (type, label, href) => {
+    if (!label) return '';
+    return `<td style="padding: 3px 12px 3px 0; ${baseFont} vertical-align: middle;">
+      ${contactIcon(type, 12)}&nbsp;
+      ${href ? `<a href="${escape(href)}" style="color:#374151; text-decoration:none;">${escape(label)}</a>` : escape(label)}
+    </td>`;
+  };
+
+  const socials = allSocials(data, 22);
+
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;">
+  <tr>
+    ${logoCell}
+    <td style="vertical-align: top;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+        <tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: bold; color: ${escape(color)}; padding-bottom: 2px;">${escape(fullName) || '&nbsp;'}</td></tr>
+        ${title ? `<tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #6b7280; padding-bottom: 8px;">${escape(title)}</td></tr>` : ''}
+        <tr><td style="padding: 6px 0;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-top: 2px solid ${escape(color)}; width: 40px;"><tr><td>&nbsp;</td></tr></table>
+        </td></tr>
+        <tr><td style="padding-top: 4px;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              ${cell('mail',  email,  email ? `mailto:${email}` : '')}
+              ${cell('phone', phone,  phone ? telHref(phone) : '')}
+            </tr>
+            <tr>
+              ${cell('mobile', mobile,   mobile ? telHref(mobile) : '')}
+              ${cell('web',    website,  website ? ensureProtocol(website) : '')}
+            </tr>
+            ${website2 ? `<tr>${cell('web', website2, ensureProtocol(website2))}</tr>` : ''}
+          </table>
+        </td></tr>
+        ${socials ? `<tr><td style="padding-top: 10px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>${socials}</tr></table></td></tr>` : ''}
+      </table>
+    </td>
+  </tr>
+</table>`;
+}
+
+// ==================== THEME 3: MINIMAL ====================
+function buildMinimal(data) {
+  const {
+    firstName = '', lastName = '', jobTitle = '', department = '',
+    email = '', phone = '', website = '', website2 = '',
+    linkedin = '', twitter = '', instagram = '', youtube = ''
+  } = data;
+
+  const fullName = [firstName, lastName].filter(Boolean).join(' ');
+  const title = [jobTitle, department].filter(Boolean).join(', ');
+
+  const link = (label, href) =>
+    `<a href="${escape(href)}" style="color: #0066cc; text-decoration: none;">${escape(label)}</a>`;
+
+  const contacts = [
+    email    && link(email,    `mailto:${email}`),
+    phone    && link(phone,    telHref(phone)),
+    website  && link(website,  ensureProtocol(website)),
+    website2 && link(website2, ensureProtocol(website2))
+  ].filter(Boolean);
+
+  const socials = [
+    linkedin  && link('linkedin',  ensureProtocol(linkedin)),
+    twitter   && link('x',         ensureProtocol(twitter)),
+    instagram && link('instagram', ensureProtocol(instagram)),
+    youtube   && link('youtube',   ensureProtocol(youtube))
+  ].filter(Boolean);
+
+  const baseFont = "font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #1f2937; line-height: 1.6;";
+
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="${baseFont}">
+  <tr><td><strong>${escape(fullName) || '&nbsp;'}</strong>${title ? ` — ${escape(title)}` : ''}</td></tr>
+  ${contacts.length ? `<tr><td style="padding-top: 6px;">${contacts.join(' &nbsp;·&nbsp; ')}</td></tr>` : ''}
+  ${socials.length  ? `<tr><td style="padding-top: 4px; font-size: 11px; color: #6b7280;">${socials.join(' &nbsp;·&nbsp; ')}</td></tr>` : ''}
+</table>`;
+}
+
+// ==================== THEME 4: BANNER ====================
+function buildBanner(data) {
+  const {
+    firstName = '', lastName = '', jobTitle = '', department = '',
+    email = '', phone = '', mobile = '', website = '', website2 = '',
+    color = '#1e40af'
+  } = data;
+
+  const fullName = [firstName, lastName].filter(Boolean).join(' ');
+  const title = [jobTitle, department].filter(Boolean).join(' · ');
+  const baseFont = "font-family: Arial, Helvetica, sans-serif; color: #374151; font-size: 12px;";
+
+  const logoCell = data.logoUrl
+    ? `<td style="padding-right: 12px; vertical-align: middle;">${logoImg(data, 56, 4)}</td>`
+    : '';
+
+  const row = (type, label, href) => {
+    if (!label) return '';
+    return `<tr><td style="${baseFont} padding: 2px 0;">
+      ${contactIcon(type, 13)}&nbsp;&nbsp;${href ? `<a href="${escape(href)}" style="color:#374151; text-decoration:none;">${escape(label)}</a>` : escape(label)}
+    </td></tr>`;
+  };
+
+  const socials = allSocials(data, 22);
+
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="max-width:520px; border-collapse: separate;">
+  <tr><td style="background-color: ${escape(color)}; padding: 14px 20px; border-radius: 6px 6px 0 0;" bgcolor="${escape(color)}">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        ${logoCell}
+        <td style="vertical-align: middle;">
+          <div style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: bold; color: #ffffff; margin: 0;">${escape(fullName) || '&nbsp;'}</div>
+          ${title ? `<div style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #ffffff; opacity: 0.9; margin-top: 2px;">${escape(title)}</div>` : ''}
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+  <tr><td style="padding: 12px 20px; background-color: #f8fafc;" bgcolor="#f8fafc">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+      ${row('mail',   email,    email ? `mailto:${email}` : '')}
+      ${row('phone',  phone,    phone ? telHref(phone) : '')}
+      ${row('mobile', mobile,   mobile ? telHref(mobile) : '')}
+      ${row('web',    website,  website ? ensureProtocol(website) : '')}
+      ${row('web',    website2, website2 ? ensureProtocol(website2) : '')}
+    </table>
+  </td></tr>
+  ${socials ? `<tr><td style="padding: 0 20px 14px 20px; background-color: #f8fafc; border-radius: 0 0 6px 6px;" bgcolor="#f8fafc">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>${socials}</tr></table>
+  </td></tr>` : ''}
+</table>`;
+}
+
+// ==================== THEME 5: COMPACT ====================
+function buildCompact(data) {
+  const {
+    firstName = '', lastName = '', jobTitle = '', department = '',
+    email = '', phone = '', website = '',
+    color = '#059669'
+  } = data;
+
+  const fullName = [firstName, lastName].filter(Boolean).join(' ');
+  const title = [jobTitle, department].filter(Boolean).join(' ');
+  const baseFont = "font-family: Arial, Helvetica, sans-serif; color: #374151; font-size: 11px;";
+
+  const logoCell = data.logoUrl
+    ? `<td style="padding-right: 12px; vertical-align: middle;">${logoImg(data, 48, 4)}</td>`
+    : '';
+
+  const socials = allSocials(data, 20);
+
+  const contactLine = [
+    email   && `<a href="mailto:${escape(email)}" style="color:#0066cc; text-decoration:none;">${escape(email)}</a>`,
+    phone   && `<a href="${telHref(phone)}" style="color:#0066cc; text-decoration:none;">${escape(phone)}</a>`,
+    website && `<a href="${escape(ensureProtocol(website))}" style="color:#0066cc; text-decoration:none;">${escape(website)}</a>`
+  ].filter(Boolean).join(' &nbsp;·&nbsp; ');
+
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="${baseFont}">
+  <tr>
+    ${logoCell}
+    <td style="vertical-align: middle; padding-right: 10px;">
+      <div style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: bold; color: ${escape(color)};">${escape(fullName) || '&nbsp;'}</div>
+      ${title ? `<div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; color: #6b7280;">${escape(title)}</div>` : ''}
+    </td>
+    <td style="vertical-align: middle; padding: 0 10px; border-left: 1px solid #e5e7eb; ${baseFont}">
+      ${contactLine}
+    </td>
+    ${socials ? `<td style="vertical-align: middle; padding-left: 10px; border-left: 1px solid #e5e7eb;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>${socials}</tr></table>
+    </td>` : ''}
   </tr>
 </table>`;
 }
